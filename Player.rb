@@ -13,7 +13,7 @@ class Player
     return @role.clone()
   end
   
-  def doTurn()
+  def do_turn()
     raise NotImplementedError, 'Player Object needs doTurn() method'
   end
   

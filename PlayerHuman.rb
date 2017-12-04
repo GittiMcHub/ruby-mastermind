@@ -2,7 +2,7 @@ require_relative "Player"
 
 class PlayerHuman < Player
   
-  def doTurn()
+  def do_turn()
     
   end
   

@@ -16,8 +16,48 @@ class Game
     self.start()
     
   end
+  
+  def turns()
+    return @made_turns.clone()
+  end
+  
+  
+  # TODO: check code + rules
+  def valid_code(code)
+    return true
+  end
+  
+  # TODO: check code + rules
+  def analyze_turn(turn)
+    return true
+  end
+  
+  def game_finished()
+    return (@made_turns.size() >= @setting_turns)
+  end
+  
     
    def start()
+     while(@code == nil)
+       puts "Please define a code, Codemaker"
+       turn = player_maker.do_turn()
+       
+       if(valid_code(turn.code()))
+         @code = turn.code()
+       end
+       
+     end
+     
+     while(!game_finished())
+       puts "It's your turn, Codebreaker"
+       turn = player_breaker.do_turn()
+       
+       if(analyze_turn(turn))
+         @made_turns.push(turn)
+       end
+       
+     end
+     
      
    end
   

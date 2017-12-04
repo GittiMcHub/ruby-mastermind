@@ -3,11 +3,11 @@ class Turn
   
   def initialize(codes)
     raise TypeError, 'codes needs to be an Array' unless codes.is_a? Array
-    @codes = codes
+    @code = codes
   end
   
-  def codes()
-    return @codes.clone()
+  def code()
+    return @code.clone()
   end
 
 end
