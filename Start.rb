@@ -23,17 +23,21 @@ setting_codelength = 4
 setting_turns = 10
 
 case game_mode
-when 1
-  player_maker = PlayerHuman.new("Human", "MAKER")
-  player_breaker = PlayerHuman.new("Human", "BREAKER")
-# NOT IMPLEMENTED
- # when 2
- # when 3
+  when 1
+    player_maker = CodemakerHuman.new("Human Maker")
+    player_breaker = CodebreakerHuman.new("Human Breaker")
+  when 2
+    player_maker = CodemakerHuman.new("Human Maker")
+    player_breaker = CodebreakerKI.new("KI Breaker")
+  when 3
+    player_maker = CodemakerKI.new("KI Maker")
+    player_breaker = CodebreakerHuman.new("Human Breaker") 
 end
 
 puts "Choose Code length: "
 setting_codelength = gets.chomp().to_i()
 puts "Choose allowed amount of turns: "
 setting_turns = gets.chomp().to_i()
+
 
 Game.new(setting_codelength, setting_turns, player_maker, player_breaker)
