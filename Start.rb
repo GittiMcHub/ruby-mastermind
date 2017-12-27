@@ -1,5 +1,15 @@
-require_relative "PlayerHuman"
+#
+#
+# Dieses Skript laesst den Benutzer auswaehlen, mit welchen Regeln und wer gegen wen spielen soll
+#
+
 require_relative "Game"
+require_relative "GameController"
+require_relative "CodebreakerHuman"
+require_relative "CodebreakerKI"
+require_relative "CodemakerHuman"
+require_relative "CodemakerKI"
+
 
 puts "   _____                   __                       .__            .___"
 puts "  /     \\ _____    _______/  |_  ___________  _____ |__| ____    __| _/"
@@ -22,6 +32,7 @@ player_breaker = nil
 setting_codelength = 4
 setting_turns = 10
 
+#TODO: Spielernamen einsammeln 
 case game_mode
   when 1
     player_maker = CodemakerHuman.new("Human Maker")
@@ -39,5 +50,8 @@ setting_codelength = gets.chomp().to_i()
 puts "Choose allowed amount of turns: "
 setting_turns = gets.chomp().to_i()
 
+# Neues Spiel mit den vorgegeben Einstellungen
+game = Game.new(setting_codelength, setting_turns, player_maker, player_breaker)
 
-Game.new(setting_codelength, setting_turns, player_maker, player_breaker)
+# Instanziert den Spielcontroller
+GameController.new(game)

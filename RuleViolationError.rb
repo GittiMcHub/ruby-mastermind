@@ -1,0 +1,3 @@
+class RuleViolationError < StandardError
+
+end
