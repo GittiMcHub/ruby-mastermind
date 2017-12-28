@@ -4,6 +4,10 @@
 
 require_relative "RuleViolationError"
 require_relative "Turn"
+require_relative "CodemakerHuman"
+require_relative "CodebreakerHuman"
+require_relative "CodemakerKI"
+require_relative "CodebreakerKI"
 
 class Game
 
@@ -38,6 +42,11 @@ class Game
   # Zugriffsmethode im boolean stil
   def won?()
     return @won
+  end
+  
+  # Methode um das Spiel fruehzeitig zu beenden
+  def surrender()
+    @setting_turns = -1
   end
 
   # Gibt den letzten Zug zurueck
@@ -81,7 +90,7 @@ class Game
     raise TypeError, 'This must be a Turn' unless turn.is_a? Turn
     raise RuleViolationError, 'Code does not match rules' unless turn.code.length() == @setting_code_length
     turn.code.each do | value |
-      raise RuleViolationError, 'At least one code is out of range' unless value.is_a? Integer or @setting_code_range.member?(value)
+      raise RuleViolationError, 'At least one code is out of range' unless value.is_a? Integer and @setting_code_range.member?(value)
     end
     return true
   end
@@ -97,12 +106,26 @@ class Game
     return self
   end
 
-  # Analysiert den gemachten Zug des Codemakers
-  def analyze_turn(turn)
+  def do_turn(turn)
     raise RuleViolationError, 'Code must be set first!' unless @code != nil
-    raise RuleViolationError, 'Turn invalid' unless valid_turn?(turn)
     raise RuleViolationError, 'Game finished already' unless !finished?()
 
+    turn = analyze_turn(turn)
+    # Zug in die Historie Aufnehmen, wird benoetigt, um das Ende des Spiels duch zu viele Zuege zu bestimmen
+    @turns.push(turn)
+    
+    # Ist der Code korrekt, wird "won" auf TRUE gesetzt. Signalisiert, dass der Codebreaker gewonnen hat
+    if @code == turn.code
+      @won = true
+    end
+    
+    return turn
+  end
+  
+  # Analysiert den gemachten Zug des Codemakers
+  def analyze_turn(turn)
+    raise RuleViolationError, 'Turn invalid' unless valid_turn?(turn)
+    
     # Direkte Treffer
     black_hits = 0
     # Indirekte Treffer
@@ -148,20 +171,35 @@ class Game
     turn.black_hits=black_hits
     turn.white_hits=white_hits
 
-    # Zug in die Historie Aufnehmen, wird benoetigt, um das Ende des Spiels duch zu viele Zuege zu bestimmen
-    @turns.push(turn)
-
-    # Ist der Code korrekt, wird "won" auf TRUE gesetzt. Signalisiert, dass der Codebreaker gewonnen hat
-    if @code == turn.code
-      @won = true
-    end
-
     return turn
   end
 
-  # TODO: return a hint
-  def give_hint()
-    return # a Turn
+
+# Der Tipp: Die erste Zahl des codes wird White Hit zurueckgeben, der Rest ist Zufall
+  def cheat()
+    
+    hint_array = []
+    
+    # Der Tipp:
+    # Wenn noch kein Zug gemacht wurde, wird die erste Zahl des codes als White Hit zurueckgeben, der Rest ist Zufall
+    if(@turns.empty?())
+      hint_array = Array.new(@setting_code_length) {rand(@setting_code_range) }
+      index = rand(2..@setting_code_length) - 1
+      hint_array[index] = @code[0]  
+      
+    else # Auf den letzten Zug bezug nehmen und den naechsten Black Hit verraten
+       hint_array = @turns.last.code
+       
+       @turns.last.code.each_with_index do |value, index|
+         if value != @code[index]
+          hint_array[index] = @code[index]
+          break
+         end
+       end  
+      
+    end
+    
+    return analyze_turn(Turn.new(hint_array))
   end
 
 end

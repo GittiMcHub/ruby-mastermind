@@ -17,13 +17,14 @@ puts " /  \\ /  \\\\__  \\  /  ___/\\   __\\/ __ \\_  __ \\/     \\|  |/    \\  
 puts "/    Y    \\/ __ \\_\\___ \\  |  | \\  ___/|  | \\/  Y Y  \\  |   |  \\/ /_/ | "
 puts "\\____|__  (____  /____  > |__|  \\___  >__|  |__|_|  /__|___|  /\\____ | "
 puts "     \\/     \\/     \\/            \\/            \\/        \\/      \\/"
-
-puts "\nChoose between options 1-3"
+puts "                                              by Team.new(\"ALT.F4\")"
+puts "\n  # # # Main Menu # # # "
 puts " Code MAKER    vs. BREAKER"
 puts "[ 1 ] Player   vs. Player"
 puts "[ 2 ] Player   vs. Computer"
 puts "[ 3 ] Computer vs. Player"
 
+print "Choose between option 1 and 3: "
 
 game_mode = gets.chomp.to_i()
 
@@ -45,9 +46,9 @@ case game_mode
     player_breaker = CodebreakerHuman.new("Human Breaker") 
 end
 
-puts "Choose Code length: "
+print "Choose Code length: "
 setting_codelength = gets.chomp().to_i()
-puts "Choose allowed amount of turns: "
+print "Choose allowed amount of turns: "
 setting_turns = gets.chomp().to_i()
 
 # Neues Spiel mit den vorgegeben Einstellungen
