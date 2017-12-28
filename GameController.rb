@@ -100,7 +100,7 @@ class GameController
     end
 
     
-    #system "clear" or system "cls"
+    system "clear" or system "cls"
     puts "The Code is set!"
     return self
   end
