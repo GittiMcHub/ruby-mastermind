@@ -8,6 +8,7 @@ require_relative "CodemakerHuman"
 require_relative "CodebreakerHuman"
 require_relative "CodemakerKI"
 require_relative "CodebreakerKI"
+require_relative "CodebreakerKIRandom"
 
 class Game
 
@@ -21,7 +22,7 @@ class Game
     raise TypeError, 'Codelength needs to be an Integer' unless setting_code_length.is_a? Integer
     raise TypeError, 'Turns needs to be an Integer' unless setting_turns.is_a? Integer
     raise TypeError, 'Given Argument is not a Player object' unless player_maker.is_a? CodemakerHuman or player_maker.is_a? CodemakerKI
-    raise TypeError, 'Given Argument is not a Player object' unless player_breaker.is_a? CodebreakerHuman or player_breaker.is_a? CodebreakerKI
+    raise TypeError, 'Given Argument is not a Player object' unless player_breaker.is_a? CodebreakerHuman or player_breaker.is_a? CodebreakerKI or player_breaker.is_a? CodebreakerKIRandom
 
     @setting_code_length = setting_code_length
     @setting_turns = setting_turns

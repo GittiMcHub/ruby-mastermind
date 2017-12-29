@@ -4,12 +4,11 @@ class CodebreakerKI
     @possible_turns = []
   end
 
-  
   #
   # DIESE KI KANN NIX !
   #
   # TODO: Blackhits genauer auswerten, aktuell wird alles als Whitehit betrachetet
-  
+
   def guess(game)
     turn = nil
 
@@ -18,9 +17,9 @@ class CodebreakerKI
       @possible_turns = generate_all_possible_turns(game.setting_code_length, game.setting_code_range)
     end
 
-    puts "#####################################################"
-    puts "DEBUG: possible turns:\n#{@possible_turns.to_s()}"
-    
+    #puts "#####################################################"
+    #puts "DEBUG: possible turns:\n#{@possible_turns.to_s()}"
+
     # Wenn noch kein Zug gemacht wurde, einen Zufaelligen aussuchen
     if !game.turns.empty?
       # Es wurde bereits ein Zug gemacht und daher muss ein Ergebnis vorliegen.
@@ -32,14 +31,14 @@ class CodebreakerKI
       # Falls keine Zahl vorkam, alle entfernen die diese ziffern enthalten
       # Also: Wenn der letzte Zug das Ergebnis: WH = 0 und BH = 0 hatte, dann kann keine der Ziffern, Teil der Loesung sein
       if (last_turn.white_hits == 0 && last_turn.black_hits == 0)
-        puts "DEBUG: no hits!"
+        #puts "DEBUG: no hits!"
         #Dafuer jede Moeglichkeit durchgehen
         @possible_turns.each do | one_possible_code |
 
           # Und pruefen ob einer der Ziffern im letzten Zug vorkam. Falls ja, ganze Moeglichkeit entfernen
           one_possible_code.each do |value|
             if last_turn.code.include?(value)
-              puts "Removing #{one_possible_code.to_s} because it's simlar to #{last_turn.code.to_s()}"
+              #puts "DEBUG: Removing #{one_possible_code.to_s} because it's simlar to #{last_turn.code.to_s()}"
               working_set.delete(one_possible_code)
               break
             end
@@ -51,7 +50,7 @@ class CodebreakerKI
       # Zweite Block:
       # Falls mindestens ein Hit, dann alle Codes entfernen, die nicht mehr in Frage kommen
       if (last_turn.white_hits + last_turn.black_hits) > 0
-        puts "DEBUG: Hits: #{(last_turn.white_hits + last_turn.black_hits)}"
+        #puts "DEBUG: Hits: #{(last_turn.white_hits + last_turn.black_hits)}"
         @possible_turns.each do | one_possible_code |
           # Jeden Durchgehen
           counter = 0
@@ -60,33 +59,34 @@ class CodebreakerKI
               counter +=1
             end
           end
-          
+
           if counter < (last_turn.white_hits + last_turn.black_hits)
-            puts "Deleting #{one_possible_code.to_s()} because it's not simlar to #{last_turn.code.to_s()}"
+            # puts "DEBUG: Deleting #{one_possible_code.to_s()} because it's not simlar to #{last_turn.code.to_s()}"
             working_set.delete(one_possible_code)
           end
-          
+
         end
-      @possible_turns = working_set  
-    
-      puts "-----------------------------------------------------"
-      puts "DEBUG: Possibilities left:\n#{@possible_turns.to_s()}"
-      
+        @possible_turns = working_set
+
       end
 
+
     end
+
+    #puts "-----------------------------------------------------"
+    #puts "DEBUG: Possibilities left:\n#{@possible_turns.to_s()}"
 
     turn_index = rand(0..(@possible_turns.size() -1))
     turn = Turn.new(@possible_turns[turn_index])
     # Den Zug aus den Moeglichkeiten fuer die naechste Runde entfernen
     @possible_turns.delete(turn.code)
-    
-    puts "DEBUG: choosing: #{turn.to_s()}"
-    
+
+    puts "DEBUG: choosing: #{turn.code.to_s()}"
+
     return turn
   end
 
-  
+
   def generate_all_possible_turns(length, range)
 
     ary = range.to_a()

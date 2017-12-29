@@ -10,7 +10,7 @@ require_relative "CodebreakerKI"
 require_relative "CodemakerHuman"
 require_relative "CodemakerKI"
 
-
+system "clear" or system "cls"
 puts "   _____                   __                       .__            .___"
 puts "  /     \\ _____    _______/  |_  ___________  _____ |__| ____    __| _/"
 puts " /  \\ /  \\\\__  \\  /  ___/\\   __\\/ __ \\_  __ \\/     \\|  |/    \\  / __ | "
@@ -24,7 +24,7 @@ puts "[ 1 ] Player   vs. Player"
 puts "[ 2 ] Player   vs. Computer"
 puts "[ 3 ] Computer vs. Player"
 
-print "Choose between option 1 and 3: "
+print "\nChoose between option 1 and 3: "
 
 game_mode = gets.chomp.to_i()
 
