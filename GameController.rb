@@ -52,6 +52,8 @@ class GameController
         clear_console()
       when "cheat"
         print_cheat()
+      else
+        print_help()
       end
 
     end
@@ -74,7 +76,7 @@ class GameController
     # und dadurch in eine andere Methode zu springen
     begin
       puts "You have #{@game.turns_left} turns left"
-      turn = @game.do_turn(@game.player_breaker.guess())
+      turn = @game.do_turn(@game.player_breaker.guess(@game))
       puts "Returned #{turn.to_s()} "
 
     rescue TypeError, RuleViolationError => err
@@ -111,19 +113,23 @@ class GameController
 
     return self
   end
-  
+
+  # Fuehrt die Cheat Methode aus. Gibt einen Sinnvollen naechsten Zug aus, ohne dabei einen Zug des Breakers zu verbrauchen
   def print_cheat()
     puts @game.cheat().to_s()
     return self
   end
 
+  # Loescht den Konsolen Inhalt
   def clear_console()
     system "clear" or system "cls"
     return self
   end
 
+  # Loescht den Konsoleninhalt und gibt das Spielfeld aus
   def print_game()
     clear_console()
+    
     crypt_code = Array.new(@game.setting_code_length) { "*" }
     puts "#{crypt_code.to_s().gsub("\"","")}"
     @game.turns.each do |turn|
@@ -140,7 +146,7 @@ class GameController
     puts "CLEAR\t\tClear the console"
     puts "DISPLAY\t\tClears the console and shows all Turns"
     puts "SURRENDER\tSurrender the game"
-    
+
     puts "\nCurrent status: #{@game.next_action} a code. Just press Enter to get prompted"
     return self
   end

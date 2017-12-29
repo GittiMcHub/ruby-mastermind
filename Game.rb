@@ -43,7 +43,7 @@ class Game
   def won?()
     return @won
   end
-  
+
   # Methode um das Spiel fruehzeitig zu beenden
   def surrender()
     @setting_turns = -1
@@ -113,19 +113,19 @@ class Game
     turn = analyze_turn(turn)
     # Zug in die Historie Aufnehmen, wird benoetigt, um das Ende des Spiels duch zu viele Zuege zu bestimmen
     @turns.push(turn)
-    
+
     # Ist der Code korrekt, wird "won" auf TRUE gesetzt. Signalisiert, dass der Codebreaker gewonnen hat
     if @code == turn.code
       @won = true
     end
-    
+
     return turn
   end
-  
+
   # Analysiert den gemachten Zug des Codemakers
   def analyze_turn(turn)
     raise RuleViolationError, 'Turn invalid' unless valid_turn?(turn)
-    
+
     # Direkte Treffer
     black_hits = 0
     # Indirekte Treffer
@@ -134,7 +134,7 @@ class Game
     # Hier wird der Code geklont, damit in der each_with_index schleife die bereits analysierten Ziffern aus dem Array entfernt werden duerfen
     analyze_clone = @code.clone()
     turn_code = turn.code()
-    
+
     # Beispiel Kombination:
     #Code 1,4,3,1
     #Turn 4,3,3,1
@@ -154,7 +154,7 @@ class Game
     # Die beiden Arrays sehen hier so aus:
     #Code 1,4,nil,nil
     #Turn 4,3,nil,nil
-    
+
     # Berechnung der White Hits
     turn_code.each_with_index do | value, index|
       # Wenn der Code aus dem Zug im Code enhalten ist, und es sich nicht um ein Nil Wert handelt, so sei es ein White Hit
@@ -165,8 +165,7 @@ class Game
         turn_code[index] = nil
       end
     end
-  
-    
+
     # Auswertung des Zuges speichern
     turn.black_hits=black_hits
     turn.white_hits=white_hits
@@ -174,31 +173,31 @@ class Game
     return turn
   end
 
-
-# Der Tipp: Die erste Zahl des codes wird White Hit zurueckgeben, der Rest ist Zufall
+  # Der Tipp: Die erste Zahl des codes wird White Hit zurueckgeben, der Rest ist Zufall
+  # Nice2Have: Beruecksichtigen wie viele Zuege noch offen sind, und erst spaeter Blackhits zurueckliefern. In den ersten Zuegen vielleicht nur White Hits
   def cheat()
-    
+
     hint_array = []
-    
+
     # Der Tipp:
     # Wenn noch kein Zug gemacht wurde, wird die erste Zahl des codes als White Hit zurueckgeben, der Rest ist Zufall
     if(@turns.empty?())
       hint_array = Array.new(@setting_code_length) {rand(@setting_code_range) }
       index = rand(2..@setting_code_length) - 1
-      hint_array[index] = @code[0]  
-      
+      hint_array[index] = @code[0]
+
     else # Auf den letzten Zug bezug nehmen und den naechsten Black Hit verraten
-       hint_array = @turns.last.code
-       
-       @turns.last.code.each_with_index do |value, index|
-         if value != @code[index]
+      hint_array = @turns.last.code
+
+      @turns.last.code.each_with_index do |value, index|
+        if value != @code[index]
           hint_array[index] = @code[index]
           break
-         end
-       end  
-      
+        end
+      end
+
     end
-    
+
     return analyze_turn(Turn.new(hint_array))
   end
 

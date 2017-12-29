@@ -13,7 +13,7 @@ class CodebreakerHuman
   
   # Der Input mus komma Separiert kommen
   # z.b: 1,2,3
-  def guess()
+  def guess(game)
     print "Please insert code comma separated: "
     input = gets.chomp()
        
