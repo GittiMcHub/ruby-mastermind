@@ -44,7 +44,7 @@ class TestCodebreakerKI < Test::Unit::TestCase
     end
 
     puts " ####################################  "
-    puts " KI won #{wins} times in #{games} games with an average of #{turns_to_win.sum() / turns_to_win.size()}"
+    puts " KI won #{wins} times in #{games} games with an average of #{turns_to_win.sum.to_f() / turns_to_win.size.to_f()}"
     puts " ####################################  "
   end
 

@@ -14,8 +14,17 @@
 # bei current_code  = [1,1,3,3]
 # blackhits         = 1
 
-prev_code     = [1,2,3,4]
-current_code  = [1,1,3,3]
+def generate_all_possible_turns(length, range)
+
+    ary = range.to_a()
+    repeated_permutation = ary.repeated_permutation(length).to_a
+
+    return repeated_permutation
+end
+  
+all_codes = generate_all_possible_turns(3,1..6)
+prev_code     = [1,2,5]
+current_code  = [1,2,5]
 blackhits = 2
 
 # Pattern Liste
