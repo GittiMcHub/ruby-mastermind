@@ -18,11 +18,11 @@ class Game
   # setting_turns       = Bestimmt wie viele Zuege der codebrekaer zum Knacken des Codes hat
   # player_maker        = Das Player Objekt des Codemakers
   # player_breaker      = Das Player Objekt des Codebreakers
-  def initialize(setting_code_length, setting_turns, player_maker, player_breaker)
+  def initialize(setting_code_length = 4,  setting_code_range = 1..6, setting_turns = 10, player_maker = CodemakerHuman.new("Human Maker"), player_breaker = CodemakerHuman.new("Human Breaker"))
     raise TypeError, 'Codelength needs to be an Integer' unless setting_code_length.is_a? Integer
     raise TypeError, 'Turns needs to be an Integer' unless setting_turns.is_a? Integer
-    raise TypeError, 'Given Argument is not a Player object' unless player_maker.is_a? CodemakerHuman or player_maker.is_a? CodemakerKI
-    raise TypeError, 'Given Argument is not a Player object' unless player_breaker.is_a? CodebreakerHuman or player_breaker.is_a? CodebreakerKI or player_breaker.is_a? CodebreakerKIRandom
+    raise TypeError, 'Given Argument is not a Player object' unless player_maker.is_a? Player
+    raise TypeError, 'Given Argument is not a Player object' unless player_breaker.is_a? Player
 
     @setting_code_length = setting_code_length
     @setting_turns = setting_turns
@@ -36,7 +36,7 @@ class Game
     # "won" beschreibt, ob der Codebraker gegen den Maker gewonnen hat
     @won = false
     # Aktuell statische Range von 1 - 6
-    @setting_code_range = 1..6
+    @setting_code_range = setting_code_range
 
   end
 

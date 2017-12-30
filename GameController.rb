@@ -13,7 +13,7 @@ require_relative "RuleViolationError"
 class GameController
   def initialize(game)
     @game = game
-
+    clear_console()
     control()
 
   end
@@ -60,12 +60,12 @@ class GameController
     # Wenn das spiel vorbei ist, beendet sich die Endlosschleife und es wird ausgewertet, wer gewonnen hat
 
     #TODO: Spielernamen einbauen
-    puts "The code was: #{@game.code.to_s()}"
-    puts ""
-    
+    clear_console()
+    print_game()
+    puts "\nThe code was: #{@game.code.to_s()}\n\n"
+
     if @game.won?
-      
-      
+
       puts "░░░░░░░░░░░░░░░░░░░░░░█████████"
       puts "░░███████░░░░░░░░░░███▒▒▒▒▒▒▒▒███"
       puts "░░█▒▒▒▒▒▒█░░░░░░░███▒▒▒▒▒▒▒▒▒▒▒▒▒███"
@@ -82,9 +82,9 @@ class GameController
       puts "░██▒▒▒▒▒▒▒▒▒▒████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒█"
       puts "░░████████████░░░█████████████████"
       puts ""
-      puts "The Codebreaker is a GENIUS! \\o/ "
+      puts "#{@game.player_breaker.to_s().upcase()} is a GENIUS! \\o/ "
     else
-      
+
       puts "███████▄▄███████████▄"
       puts "▓▓▓▓▓▓█░░░░░░░░░░░░░░█"
       puts "▓▓▓▓▓▓█░░░░░░░░░░░░░░█"
@@ -99,8 +99,11 @@ class GameController
       puts "░░░░░░░░░░░█░░█"
       puts "░░░░░░░░░░░░▀▀"
       puts ""
-      puts "The Codebreaker is a LOOSER! :( - Codemaker is just too good! "
+      puts " #{@game.player_breaker.to_s().upcase()} is a LOOSER! :( - #{@game.player_maker.to_s().upcase()} is your Master!\n"
     end
+
+    puts "\n\nPress ENTER to go back to main menu..."
+    gets.chomp()
 
   end
 
@@ -110,9 +113,9 @@ class GameController
     # Hier gibt es keine While Schleife, damit der Benutzer die Moeglichkeit hat, zwischendurch das Cheat Kommando auszufuerehn
     # und dadurch in eine andere Methode zu springen
     begin
-      puts "You have #{@game.turns_left} turns left"
+      puts "\nYou have #{@game.turns_left} turns left\n\n"
       turn = @game.do_turn(@game.player_breaker.guess(@game))
-      puts "Returned #{turn.to_s()} "
+      puts "\nReturned #{turn.to_s()} "
 
     rescue TypeError, RuleViolationError => err
       # Anzeigen des Problems
@@ -164,7 +167,7 @@ class GameController
   # Loescht den Konsoleninhalt und gibt das Spielfeld aus
   def print_game()
     clear_console()
-    
+
     crypt_code = Array.new(@game.setting_code_length) { "*" }
     puts "#{crypt_code.to_s().gsub("\"","")}"
     @game.turns.each do |turn|

@@ -1,16 +1,23 @@
+#
+# KI Codebreaker 
+# Wertet die Ergebnisse aus und versucht moeglichst Sinnvolle Zuege zu machen
+# Keine 100% KI um das Spiel spaßiger zu machen
+#
+
+
+require_relative "Player"
 require_relative "Game"
 require_relative "Turn"
 
-class CodebreakerKI
+class CodebreakerKI < Player
   def initialize(name)
-    @name = name
+    super(name)
     @possible_turns = []
   end
 
   #
-  # KI gewinnt mit ca. 71%
+  # KI gewinnt mit ca. 71% bei einem 4-stelligen Code
   #
-  # TODO: Blackhits genauer auswerten, aktuell wird alles als Whitehit betrachetet
 
   def guess(game)
     turn = nil
@@ -32,13 +39,14 @@ class CodebreakerKI
       # Falls keine Zahl vorkam, alle entfernen die diese ziffern enthalten
       # Also: Wenn der letzte Zug das Ergebnis: WH = 0 und BH = 0 hatte, dann kann keine der Ziffern, Teil der Loesung sein
       if last_turn.white_hits == 0 && last_turn.black_hits == 0
-        puts "KI: Oh no! I can do better!"
+        print "KI: Oh no! I can do better!\nThinking..."
         #Dafuer jede Moeglichkeit durchgehen
         @possible_turns.each do | one_possible_code |
 
           # Und pruefen ob einer der Ziffern im letzten Zug vorkam. Falls ja, ganze Moeglichkeit entfernen
           one_possible_code.each do |value|
             if last_turn.code.include?(value)
+              print "."
               working_set.delete(one_possible_code)
               break
             end
@@ -51,6 +59,7 @@ class CodebreakerKI
       # Zweite Block:
       # Falls mindestens ein Hit, dann alle Codes entfernen, die nicht mehr in Frage kommen
       if (last_turn.white_hits + last_turn.black_hits) > 0
+        print "KI: Hm. I need to think about it..."
         @possible_turns.each do | one_possible_code |
           # Jeden Durchgehen
           counter = 0
@@ -63,6 +72,7 @@ class CodebreakerKI
           # Wenn nicht genuegend treffer mit dieser Moeglichkeit moeglich sind, dann Diese entfernen
           if counter < (last_turn.white_hits + last_turn.black_hits)
             working_set.delete(one_possible_code)
+            print "."
           end
 
         end
@@ -90,6 +100,7 @@ class CodebreakerKI
           # Und nur die Speichern, bei denen die gleichen Blackhits moeglich waeren
           if hitcount >= last_turn.black_hits
             remaining_possibilities.push(possible)
+            print "."
           end
         end
         
@@ -100,7 +111,7 @@ class CodebreakerKI
 
     end
 
-    puts "KI: Sooo... I guess there are #{@possible_turns.size()} possibilities left...\n"
+    puts "\nKI: Sooo... There are #{@possible_turns.size()} possibilities left...\n"
 
     turn_index = rand(0..(@possible_turns.size() -1))
     turn = Turn.new(@possible_turns[turn_index])
@@ -113,9 +124,11 @@ class CodebreakerKI
   end
 
 
+  # Baut alle moeglichen Kombinationen zusammen
   def generate_all_possible_turns(length, range)
 
     ary = range.to_a()
+    # Wiederholende Permutation da Ziffern doppelt genutzt werden duerfen
     repeated_permutation = ary.repeated_permutation(length).to_a
 
     return repeated_permutation

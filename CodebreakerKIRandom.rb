@@ -1,13 +1,21 @@
-class CodebreakerKIRandom
+#
+# Captain Random fuehrt nur Zufaellige Zuege aus...
+#
+
+require_relative "Player"
+require_relative "Game"
+require_relative "Turn"
+
+class CodebreakerKIRandom < Player
   def initialize(name)
-    @name = name
+    super(name)
     @possible_turns = []
   end
 
   #
   # Captain Random
   #
-  
+
   def guess(game)
     turn = nil
 
@@ -21,13 +29,27 @@ class CodebreakerKIRandom
     # Den Zug aus den Moeglichkeiten fuer die naechste Runde entfernen
     @possible_turns.delete(turn.code)
 
-    puts "DEBUG: choosing: #{turn.code.to_s()}"
+    puts ""
+    case turn.code[0]
+    when 1
+      print "Ahoy, Matey!"
+    when 2
+      print "Gimme the treasure! I'll give you"
+    when 3
+      print "I'm looking for that booty!"
+    when 4
+      print "Savvy? I said"
+    when 5
+      print "Aaaarrrrgggghhhh!"
+    when 6
+      print "Blimey!"
+    end
+
+    print " #{turn.code.to_s()}\n"
 
     return turn
   end
 
-  
-  
   def generate_all_possible_turns(length, range)
 
     ary = range.to_a()

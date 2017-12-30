@@ -3,12 +3,16 @@
 # Im speziellen ein Menschlicher Spieler
 # Sobald dieser aufgefordert wird ein Code zu erstellen, wird User Input angefordert
 #
+
+
+require_relative "Player"
+require_relative "Game"
 require_relative "Turn"
 
-class CodemakerHuman
+class CodemakerHuman < Player
   
   def initialize(name)
-    @name = name
+    super(name)
   end
   
   # Das Spiel wird uebergeben, da es die Regeln uber den Code enthaelt
