@@ -5,7 +5,7 @@
 #
 require_relative "Turn"
 
-class CodebreakerHuman
+class CodebreakerHuman < Player
   
   def initialize(name)
     @name = name

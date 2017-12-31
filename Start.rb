@@ -7,6 +7,7 @@
 
 require_relative "Game"
 require_relative "GameConsole"
+require_relative "CompetitionConsole"
 require_relative "CodebreakerHuman"
 require_relative "CodebreakerKI"
 require_relative "CodemakerHuman"
@@ -25,9 +26,14 @@ def new_game()
   puts "\n 10 trys to break a 4-digit code with numbers between 1 and 6"
   puts "\n  # # # Main Menu # # # "
   puts " Code MAKER    vs. BREAKER"
+  puts "-------------------------------------"
   puts "[ 1 ] Player   vs. Player"
   puts "[ 2 ] Player   vs. Computer"
   puts "[ 3 ] Computer vs. Player"
+  puts "------- C O M P E T I T I O N -------"
+  puts "[ 5 ] Player   vs. Player vs. Player"
+  puts "[ 6 ] Player   vs. KI     vs. Player"
+  puts "[ 7 ] Computer vs. Player vs. Player"
 
   player_maker = nil
   player_breaker = nil
@@ -39,8 +45,8 @@ def new_game()
   game_mode = 0
 
   # Solange ein ungueltiger Game Mode ausgewaehlt wurde, erneut fragen
-  while !(1..4).to_a.include?(game_mode)
-    print "\nChoose between option 1 and 3: "
+  while !(1..8).to_a.include?(game_mode)
+    print "\nChoose between listed options: "
     game_mode = gets.chomp.to_i()
 
     # Verschiedene Spielmodi werden ueber Ziffern ausgewaehlt
@@ -57,7 +63,7 @@ def new_game()
 
       puts "\nChoose your enemy!   | Difficulty | 2-digit | 3-digit | 4-digit "
       puts "----------------------------------------------------------------"
-      puts "[ 1 ] Captain Random | Range 1..6 | ~??.?%  | ~??.?%  | ??.?"
+      puts "[ 1 ] Captain Random | Range 1..6 | ~30.0%  | ~4.0?%  | 1.0%"
       puts "[ 2 ] Fortuna        | Range 1..6 | ~99.9%  | ~94.5%  | 45% - 80%"
 
       ki_breaker_option = 0
@@ -82,6 +88,32 @@ def new_game()
       # 4 Computer vs. Computer
       player_maker = CodemakerKI.new("Captain Random")
       player_breaker = CodebreakerKI.new("Fortuna")
+
+    # Competition Modes
+    when 5
+      player_maker = CodemakerHuman.new("Master - Player 1")
+      player_breaker_one = CodebreakerHuman.new("Player 2")
+      player_breaker_two = CodebreakerHuman.new("Player 3")
+      competition(player_maker, player_breaker_one, player_breaker_two)
+      return
+    when 6
+      player_maker = CodemakerHuman.new("Master - Player 1")
+      player_breaker_one = CodebreakerKI.new("KI")
+      player_breaker_two = CodebreakerHuman.new("Player 2")
+      competition(player_maker, player_breaker_one, player_breaker_two)
+      return
+    when 7
+      player_maker = CodemakerKI.new("Master - KI")
+      player_breaker_one = CodebreakerHuman.new("Player 1")
+      player_breaker_two = CodebreakerHuman.new("Player 2")
+      competition(player_maker, player_breaker_one, player_breaker_two)
+      return
+    when 8
+      player_maker = CodemakerKI.new("Master - KI")
+      player_breaker_one = CodebreakerKI.new("Fortuna 1")
+      player_breaker_two = CodebreakerKI.new("Fortuna 2")
+      competition(player_maker, player_breaker_one, player_breaker_two)
+      return
     end
 
   end
@@ -104,6 +136,10 @@ def new_game()
 
   # Instanziert den Spielcontroller
   GameConsole.new(game)
+end
+
+def competition(player1, player2, player3)
+  CompetitionConsole.new(player1, player2, player3)
 end
 
 while true
