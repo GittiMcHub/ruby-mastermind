@@ -19,7 +19,6 @@ class Game
   # player_maker        = Das Player Objekt des Codemakers
   # player_breaker      = Das Player Objekt des Codebreakers
   def initialize(setting_code_length = 4,  setting_code_range = 1..6, setting_turns = 10, player_maker = CodemakerHuman.new("Human Maker"), player_breaker = CodemakerHuman.new("Human Breaker"))
-    puts "DEBUG: Maker: #{player_maker.to_s} Breaker:  #{player_breaker.to_s}"
     raise TypeError, 'Codelength needs to be an Integer' unless setting_code_length.is_a? Integer
     raise TypeError, 'Turns needs to be an Integer' unless setting_turns.is_a? Integer
     raise TypeError, 'Given Maker is not a Player object' unless player_maker.is_a? Player
@@ -46,9 +45,9 @@ class Game
   def won?()
     return @won
   end
-  
+
   def cheated?()
-     return @cheated
+    return @cheated
   end
 
   # Methode um das Spiel fruehzeitig zu beenden
@@ -196,9 +195,9 @@ class Game
   def cheat()
 
     if @code == nil
-       return nil
+      return nil
     end
-    
+
     hint_array = []
 
     # Der Tipp:
