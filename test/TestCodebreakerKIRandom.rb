@@ -1,8 +1,10 @@
 require 'test/unit'
 
-require_relative 'CodebreakerKIRandom'
-require_relative 'Turn'
-require_relative 'Game'
+require_relative '../Turn'
+require_relative '../Game'
+require_relative '../CodebreakerKI'
+require_relative '../CodebreakerKIRandom'
+require_relative '../CodeMakerKI'
 
 class TestCodebreakerKIRandom < Test::Unit::TestCase
   def setup()

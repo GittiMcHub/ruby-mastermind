@@ -6,7 +6,7 @@
 #  - Wie viele Versuche hat der Codebreaker
 
 require_relative "Game"
-require_relative "GameController"
+require_relative "GameConsole"
 require_relative "CodebreakerHuman"
 require_relative "CodebreakerKI"
 require_relative "CodemakerHuman"
@@ -22,7 +22,7 @@ def new_game()
   puts "\\____|__  (____  /____  > |__|  \\___  >__|  |__|_|  /__|___|  /\\____ | "
   puts "     \\/     \\/     \\/            \\/            \\/        \\/      \\/"
   puts "                                              by Team.new(\"ALT.F4\")"
-  puts "\n10 trys to break a 4-digit code with numbers between 1 and 6"
+  puts "\n 10 trys to break a 4-digit code with numbers between 1 and 6"
   puts "\n  # # # Main Menu # # # "
   puts " Code MAKER    vs. BREAKER"
   puts "[ 1 ] Player   vs. Player"
@@ -103,7 +103,7 @@ def new_game()
   game = Game.new(setting_code_length, setting_code_range, setting_turns, player_maker, player_breaker)
 
   # Instanziert den Spielcontroller
-  GameController.new(game)
+  GameConsole.new(game)
 end
 
 while true

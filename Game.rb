@@ -12,7 +12,7 @@ require_relative "CodebreakerKIRandom"
 
 class Game
 
-  attr_reader :player_maker, :player_breaker, :turns, :setting_code_length,  :setting_code_range, :setting_turns
+  attr_reader :player_maker, :player_breaker, :turns, :setting_code_length, :setting_code_range, :setting_turns
   # Instanzierung mit folgenden Parametern
   # setting_code_length = Die laenge des Codes
   # setting_turns       = Bestimmt wie viele Zuege der codebrekaer zum Knacken des Codes hat
@@ -25,6 +25,7 @@ class Game
     raise TypeError, 'Given Argument is not a Player object' unless player_breaker.is_a? Player
 
     @setting_code_length = setting_code_length
+    @setting_code_range = setting_code_range
     @setting_turns = setting_turns
     @player_maker = player_maker
     @player_breaker = player_breaker
@@ -35,14 +36,18 @@ class Game
     @code = nil
     # "won" beschreibt, ob der Codebraker gegen den Maker gewonnen hat
     @won = false
-    # Aktuell statische Range von 1 - 6
-    @setting_code_range = setting_code_range
+    # Inidaktor fuer schummeln
+    @cheated = false
 
   end
 
   # Zugriffsmethode im boolean stil
   def won?()
     return @won
+  end
+  
+  def cheated?()
+     return @cheated
   end
 
   # Methode um das Spiel fruehzeitig zu beenden
@@ -84,6 +89,17 @@ class Game
       return "guess"
     end
     return "finished"
+  end
+
+  # Gibt zrueck, was als naechstes Laut Regelwerk passieren sollte
+  def next()
+    if(@code == nil)
+      self.set_code(self.player_maker.create_code(self))
+    end
+    if(@code != nil && !self.finished?())
+      self.do_turn(self.player_breaker.guess(self))
+    end
+    return self
   end
 
   # Prueft ob der gemachte Zug den Fachlichen und Programmtechnischen Regeln entspricht
@@ -178,6 +194,10 @@ class Game
   # Nice2Have: Beruecksichtigen wie viele Zuege noch offen sind, und erst spaeter Blackhits zurueckliefern. In den ersten Zuegen vielleicht nur White Hits
   def cheat()
 
+    if @code == nil
+       return nil
+    end
+    
     hint_array = []
 
     # Der Tipp:
@@ -198,7 +218,7 @@ class Game
       end
 
     end
-
+    @cheated = true
     return analyze_turn(Turn.new(hint_array))
   end
 
