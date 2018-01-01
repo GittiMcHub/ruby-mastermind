@@ -36,7 +36,7 @@ class CodebreakerKIRandom < Player
     when 2
       print "Gimme the treasure! I'll give you"
     when 3
-      print "I'm looking for that booty!"
+      print "Where is the booty?!"
     when 4
       print "Savvy? I said"
     when 5

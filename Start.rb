@@ -1,9 +1,11 @@
 #
 # Start Skript fuer das Mastermind Spiel
-# Hier werden Rahmenbedinungen festgelegt, wie das Spiel ablaufen soll
+#
+# Hier werden die Rahmenbedinungen festgelegt, wie das Spiel ablaufen soll
 #  - Wer spielt gegen Wen
 #  - Wie lang darf ein Code sein
 #  - Wie viele Versuche hat der Codebreaker
+#  - Zuasetlich gibt es ein Competition Modus
 
 require_relative "Game"
 require_relative "GameConsole"
@@ -13,6 +15,7 @@ require_relative "CodebreakerKI"
 require_relative "CodemakerHuman"
 require_relative "CodemakerKI"
 
+# Methode um ein Neues Spiel zu starten
 def new_game()
 
   system "clear" or system "cls"
@@ -32,8 +35,9 @@ def new_game()
   puts "[ 3 ] Computer vs. Player"
   puts "------- C O M P E T I T I O N -------"
   puts "[ 5 ] Player   vs. Player vs. Player"
-  puts "[ 6 ] Player   vs. KI     vs. Player"
+  puts "[ 6 ] Player   vs. Player vs. KI"
   puts "[ 7 ] Computer vs. Player vs. Player"
+  puts "[ 8 ] Computer vs. Player vs. KI"
 
   player_maker = nil
   player_breaker = nil
@@ -41,11 +45,11 @@ def new_game()
   setting_code_range = 1..6
   setting_turns = 10
 
-  #TODO: Spielernamen einsammeln
+  # TODO: Nice2Have: Spielernamen einsammeln
   game_mode = 0
 
   # Solange ein ungueltiger Game Mode ausgewaehlt wurde, erneut fragen
-  while !(1..8).to_a.include?(game_mode)
+  while !(1..9).to_a.include?(game_mode)
     print "\nChoose between listed options: "
     game_mode = gets.chomp.to_i()
 
@@ -89,7 +93,7 @@ def new_game()
       player_maker = CodemakerKI.new("Captain Random")
       player_breaker = CodebreakerKI.new("Fortuna")
 
-    # Competition Modes
+      # Competition Modes
     when 5
       player_maker = CodemakerHuman.new("Master - Player 1")
       player_breaker_one = CodebreakerHuman.new("Player 2")
@@ -98,8 +102,8 @@ def new_game()
       return
     when 6
       player_maker = CodemakerHuman.new("Master - Player 1")
-      player_breaker_one = CodebreakerKI.new("KI")
-      player_breaker_two = CodebreakerHuman.new("Player 2")
+      player_breaker_one = CodebreakerHuman.new("Player 1")
+      player_breaker_two = CodebreakerKI.new("Fortuna 2")
       competition(player_maker, player_breaker_one, player_breaker_two)
       return
     when 7
@@ -109,6 +113,12 @@ def new_game()
       competition(player_maker, player_breaker_one, player_breaker_two)
       return
     when 8
+      player_maker = CodemakerKI.new("Master - KI")
+      player_breaker_one = CodebreakerHuman.new("Player 1")
+      player_breaker_two = CodebreakerKI.new("Fortuna 2")
+      competition(player_maker, player_breaker_one, player_breaker_two)
+      return
+    when 9
       player_maker = CodemakerKI.new("Master - KI")
       player_breaker_one = CodebreakerKI.new("Fortuna 1")
       player_breaker_two = CodebreakerKI.new("Fortuna 2")
@@ -138,10 +148,12 @@ def new_game()
   GameConsole.new(game)
 end
 
+# Gesonderte Methode um ein Competition Game zu starten um Codewiederholungen zu vermeiden
 def competition(player1, player2, player3)
   CompetitionConsole.new(player1, player2, player3)
 end
 
+# Endlosschleife um anschliessend immer wieder ins Hauptmenue zu kommen
 while true
   new_game()
 end

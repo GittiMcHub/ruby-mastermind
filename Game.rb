@@ -12,23 +12,31 @@ require_relative "CodebreakerKIRandom"
 
 class Game
 
-  attr_reader :player_maker, :player_breaker, :turns, :setting_code_length, :setting_code_range, :setting_turns
+  attr_reader :player_maker, :player_breaker, :setting_code_length, :setting_code_range, :setting_turns
   # Instanzierung mit folgenden Parametern
   # setting_code_length = Die laenge des Codes
+  # setting_code_range  = Range der Ziffern
   # setting_turns       = Bestimmt wie viele Zuege der codebrekaer zum Knacken des Codes hat
   # player_maker        = Das Player Objekt des Codemakers
   # player_breaker      = Das Player Objekt des Codebreakers
   def initialize(setting_code_length = 4,  setting_code_range = 1..6, setting_turns = 10, player_maker = CodemakerHuman.new("Human Maker"), player_breaker = CodemakerHuman.new("Human Breaker"))
     raise TypeError, 'Codelength needs to be an Integer' unless setting_code_length.is_a? Integer
+    raise TypeError, 'Coderange needs to be a Range' unless setting_code_range.is_a? Range
     raise TypeError, 'Turns needs to be an Integer' unless setting_turns.is_a? Integer
     raise TypeError, 'Given Maker is not a Player object' unless player_maker.is_a? Player
     raise TypeError, 'Given Breaker is not a Player object' unless player_breaker.is_a? Player
 
+    # Setzen der Initialisierungsvariablen
     @setting_code_length = setting_code_length
     @setting_code_range = setting_code_range
     @setting_turns = setting_turns
     @player_maker = player_maker
     @player_breaker = player_breaker
+
+    # Freezen damit die Regeln nicht waehrend des SSpiels geaendert werden koennen
+    @setting_code_length.freeze
+    @setting_code_range.freeze
+    @setting_turns.freeze
 
     # Beinhaltet alle gemachten Zuege
     @turns = []
@@ -39,6 +47,10 @@ class Game
     # Inidaktor fuer schummeln
     @cheated = false
 
+  end
+
+  def turns()
+    return @turns.dup()
   end
 
   # Zugriffsmethode im boolean stil
@@ -77,7 +89,7 @@ class Game
 
   def code()
     raise RuleViolationError, "You are not allowed to view the code when the game is running" unless finished?()
-    return @code
+    return @code.dup()
   end
 
   # Gibt zrueck, was als naechstes Laut Regelwerk passieren sollte
@@ -91,7 +103,7 @@ class Game
     return "finished"
   end
 
-  # Gibt zrueck, was als naechstes Laut Regelwerk passieren sollte
+  # Laesst die Spieler laut Regelwerk weiterspeielen
   def next()
     if(@code == nil)
       self.set_code(self.player_maker.create_code(self))
@@ -119,6 +131,7 @@ class Game
     raise RuleViolationError, 'Turn invalid' unless valid_turn?(turn)
 
     @code = turn.code
+    @code.freeze
 
     return self
   end
@@ -139,7 +152,40 @@ class Game
     return turn
   end
 
+  # Der Tipp: Die erste Zahl des codes wird White Hit zurueckgeben, der Rest ist Zufall
+  # Nice2Have: Beruecksichtigen wie viele Zuege noch offen sind, und erst spaeter Blackhits zurueckliefern. In den ersten Zuegen vielleicht nur White Hits
+  def cheat()
+
+    if @code == nil
+      return nil
+    end
+
+    hint_array = []
+
+    # Der Tipp:
+    # Wenn noch kein Zug gemacht wurde, wird die erste Zahl des codes als White Hit zurueckgeben, der Rest ist Zufall
+    if(@turns.empty?())
+      hint_array = Array.new(@setting_code_length) {rand(@setting_code_range) }
+      index = rand(2..@setting_code_length) - 1
+      hint_array[index] = @code[0]
+
+    else # Auf den letzten Zug bezug nehmen und den naechsten Black Hit verraten
+      hint_array = @turns.last.code
+
+      @turns.last.code.each_with_index do |value, index|
+        if value != @code[index]
+          hint_array[index] = @code[index]
+          break
+        end
+      end
+
+    end
+    @cheated = true
+    return analyze_turn(Turn.new(hint_array))
+  end
+
   # Analysiert den gemachten Zug des Codemakers
+  private
   def analyze_turn(turn)
     raise RuleViolationError, 'Turn invalid' unless valid_turn?(turn)
 
@@ -149,7 +195,7 @@ class Game
     white_hits = 0
 
     # Hier wird der Code geklont, damit in der each_with_index schleife die bereits analysierten Ziffern aus dem Array entfernt werden duerfen
-    analyze_clone = @code.clone()
+    analyze_clone = @code.dup()
     turn_code = turn.code()
 
     # Beispiel Kombination:
@@ -188,38 +234,6 @@ class Game
     turn.white_hits=white_hits
 
     return turn
-  end
-
-  # Der Tipp: Die erste Zahl des codes wird White Hit zurueckgeben, der Rest ist Zufall
-  # Nice2Have: Beruecksichtigen wie viele Zuege noch offen sind, und erst spaeter Blackhits zurueckliefern. In den ersten Zuegen vielleicht nur White Hits
-  def cheat()
-
-    if @code == nil
-      return nil
-    end
-
-    hint_array = []
-
-    # Der Tipp:
-    # Wenn noch kein Zug gemacht wurde, wird die erste Zahl des codes als White Hit zurueckgeben, der Rest ist Zufall
-    if(@turns.empty?())
-      hint_array = Array.new(@setting_code_length) {rand(@setting_code_range) }
-      index = rand(2..@setting_code_length) - 1
-      hint_array[index] = @code[0]
-
-    else # Auf den letzten Zug bezug nehmen und den naechsten Black Hit verraten
-      hint_array = @turns.last.code
-
-      @turns.last.code.each_with_index do |value, index|
-        if value != @code[index]
-          hint_array[index] = @code[index]
-          break
-        end
-      end
-
-    end
-    @cheated = true
-    return analyze_turn(Turn.new(hint_array))
   end
 
 end
