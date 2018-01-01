@@ -7,27 +7,28 @@ One of our mandatory tasks was to programm the Mastermind game.
 In general 
 - separate game logic and interaction
 - for convenience use numbers instead of colors
-- be able to configure the rules 
-Specifically
- 1. Please write code, the master mind on the computer against a human being as a codebreaker over the console. 
-    You must do the following:
-  1.1 Generate a combination that needs to be guessed.
-  1.2 Reading the inputs via the keyboard (console).
-  1.3 Analysis of the input and
-  1.4 Output of the evaluation.
-  1.5 Counting the number of attempts to abort after 10 attempts.
+- be able to configure the rules <br/>
 
- 2. Not all methods are easy to test. But for some, it's simple and easy. at least for some it should be helpful.
-    At least it's easy for
-  2.1 Check whether the generated number corresponds to the rules.
-  2.2 Detection of the correct number of direct or indirect hits.
 
- 3. After the base for mastermind I ask you to develop some "artificial intelligence":
-    Please write code, which mastermind as codebreaker against a computer, or plays a human being as codemaker!
-    In detail, your further developed Mastermind game should now do just that:
-  3.1 It should be possible for the computer (i. e. your code) to play against a human being,i. e. the person (codemaker) thinks up a code that the computer has to guess.
-  3.2 When a person is playing as a codebreaker against the computer, he should get a hint, which makes a sensible suggestion for the next attempt.
-  3.3 The selection of game variants and playing should be done in a clear and comfortable way according to the limited possibilities of the console.
+ 1. Please write code, the master mind on the computer against a human being as a codebreaker over the console.<br/>
+    You must do the following:<br/>
+  1.1 Generate a combination that needs to be guessed.<br/>
+  1.2 Reading the inputs via the keyboard (console).<br/>
+  1.3 Analysis of the input and<br/>
+  1.4 Output of the evaluation.<br/>
+  1.5 Counting the number of attempts to abort after 10 attempts.<br/>
+
+ 2. Not all methods are easy to test. But for some, it's simple and easy. at least for some it should be helpful.<br/>
+    At least it's easy for<br/>
+  2.1 Check whether the generated number corresponds to the rules.<br/>
+  2.2 Detection of the correct number of direct or indirect hits.<br/>
+
+ 3. After the base for mastermind I ask you to develop some "artificial intelligence":<br/>
+    Please write code, which mastermind as codebreaker against a computer, or plays a human being as codemaker!<br/>
+    In detail, your further developed Mastermind game should now do just that:<br/>
+  3.1 It should be possible for the computer (i. e. your code) to play against a human being,i. e. the person (codemaker) thinks up a code that the computer has to guess.<br/>
+  3.2 When a person is playing as a codebreaker against the computer, he should get a hint, which makes a sensible suggestion for the next attempt.<br/>
+  3.3 The selection of game variants and playing should be done in a clear and comfortable way according to the limited possibilities of the console.<br/>
 
   (Translated from german to english using www.DeepL.com/Translator)
 
