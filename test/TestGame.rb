@@ -16,6 +16,7 @@ class TestCodebreakerKI < Test::Unit::TestCase
     @allowed_turns = 10
     @maker = CodemakerKI.new("Alt.F4 TÜV Maker")
     @breaker = CodebreakerKI.new("Alt.F4 TÜV Breaker")
+    @breaker.talking = false
     @game = Game.new(@code_length, @code_range, @allowed_turns, @maker, @breaker)
 
   end
@@ -127,7 +128,7 @@ class TestCodebreakerKI < Test::Unit::TestCase
     assert_raise(NoMethodError) do
       @game.player_breaker = nil
     end
-    
+
     actual_amount_of_turns = @game.turns.size()
     @game.turns.push("ToxicObject")
     # Das Zurueckgegebene Array darf nicht ermoelgichen, in das Spiel einzugreifen
@@ -147,14 +148,14 @@ class TestCodebreakerKI < Test::Unit::TestCase
     assert_raise(RuleViolationError) do
       @game.set_code(Turn.new([1,2,3,4]))
     end
-    
+
     @game.do_turn(Turn.new([1,2,3,4]))
-      
+
     # Nachdem das Spiel beendet wurde, darf der Code auch nicht geandert werden
     assert_true(@game.finished?())
     @game.code.push(9)
     assert_false(@game.code.include?(9))
-    
+
   end
 
   #Testet die Code laenge und Range
@@ -184,10 +185,116 @@ class TestCodebreakerKI < Test::Unit::TestCase
     assert_raise(RuleViolationError) do
       @game.code
     end
-    
+
     @game.do_turn(Turn.new([1,2,3,4]))
     assert(@game.code)
 
   end
-  
+
+  # Testet mithilfe von Beispielen der URL
+  # http://www.bernhard-gaul.de/spiele/mastermind/mmbeispiele.htm
+  # Die Methode - analyze_turn, die fuer die Auswertung zwischen Eingabe und gegebenen Code genutzt wird
+  #
+  # analyze_turn ist eine PRIVATE Methode, durch Stackoverflow wurde eine Moeglichkeit gefunden, diese Methoden zu testen
+  #
+  # https://stackoverflow.com/questions/267237/whats-the-best-way-to-unit-test-protected-private-methods-in-ruby
+  # myobject.send(:method_name, args)
+  def test_analyze_turn()
+
+    dummy_maker =  CodemakerHuman.new("TÜV Alt-F4")
+    dummy_breaker = CodebreakerHuman.new("TÜV Alt-F4")
+
+    # Schwarz = 1
+    # Rot = 2
+    # Gruen = 3
+    # Gelb = 4
+    # Blau = 5
+    # orange = 6
+
+    
+    #
+    # Von der Websiete, Abschnitt: Beispiele: Lösung kompletter Spiele
+    #
+    
+    # Beispiel 1 #####################################
+    code = [6,5,2,5]
+    turn_1 = Turn.new([1,4,2,6]) # 1 BH 1 WH
+    turn_2 = Turn.new([1,3,4,5]) # 1 BH 
+    turn_3 = Turn.new([1,2,1,1]) # 1 WH
+    turn_4 = Turn.new([5,6,2,5]) # 2 BH 2 WH
+
+    g = Game.new(@code_length, @code_range, @allowed_turns,dummy_maker, dummy_breaker )
+    g.set_code(Turn.new(code))
+    result_1 = g.send(:analyze_turn, turn_1)
+    assert_equal(1, result_1.black_hits)
+    assert_equal(1, result_1.white_hits)
+    result_2 = g.send(:analyze_turn, turn_2)
+    assert_equal(1, result_2.black_hits)
+    assert_equal(0, result_2.white_hits)
+    result_3 = g.send(:analyze_turn, turn_3)
+    assert_equal(0, result_3.black_hits)
+    assert_equal(1, result_3.white_hits)
+    result_4 = g.send(:analyze_turn, turn_4)
+    assert_equal(2, result_4.black_hits)
+    assert_equal(2, result_4.white_hits)
+
+    # Beispiel 2 #####################################
+    code = [1,2,3,4]
+    turn_1 = Turn.new([5,5,3,3]) # 1 BH
+    turn_2 = Turn.new([4,4,3,3]) # 1 BH 1 WH
+    turn_3 = Turn.new([2,2,3,4]) # 3 BH
+    turn_4 = Turn.new([1,2,3,4]) # 4 BH
+
+    g = Game.new(@code_length, @code_range, @allowed_turns,dummy_maker, dummy_breaker )
+    g.set_code(Turn.new(code))
+    result_1 = g.send(:analyze_turn, turn_1)
+    assert_equal(1, result_1.black_hits)
+    assert_equal(0, result_1.white_hits)
+    result_2 = g.send(:analyze_turn, turn_2)
+    assert_equal(1, result_2.black_hits)
+    assert_equal(1, result_2.white_hits)
+    result_3 = g.send(:analyze_turn, turn_3)
+    assert_equal(3, result_3.black_hits)
+    assert_equal(0, result_3.white_hits)
+    result_4 = g.send(:analyze_turn, turn_4)
+    assert_equal(4, result_4.black_hits)
+    assert_equal(0, result_4.white_hits)
+
+    # Beispiel 3 #####################################
+    code = [3,2,3,6]
+    turn_1 = Turn.new([4,4,5,5]) # 0/0
+    turn_2 = Turn.new([3,3,2,2]) # 1 BH 2 WH
+    turn_3 = Turn.new([1,2,3,2]) # 2 BH
+
+    g = Game.new(@code_length, @code_range, @allowed_turns,dummy_maker, dummy_breaker )
+    g.set_code(Turn.new(code))
+    result_1 = g.send(:analyze_turn, turn_1)
+    assert_equal(0, result_1.black_hits)
+    assert_equal(0, result_1.white_hits)
+    result_2 = g.send(:analyze_turn, turn_2)
+    assert_equal(1, result_2.black_hits)
+    assert_equal(2, result_2.white_hits)
+    result_3 = g.send(:analyze_turn, turn_3)
+    assert_equal(2, result_3.black_hits)
+    assert_equal(0, result_3.white_hits)
+
+    # Beispiel 4 #####################################
+    code = [4,4,3,4]
+    turn_1 = Turn.new([3,3,4,4]) # 1 BH 2 WH
+    turn_2 = Turn.new([5,4,4,3]) # 1 BH 2 WH
+    turn_3 = Turn.new([2,4,3,4]) # 3 BH
+
+    g = Game.new(@code_length, @code_range, @allowed_turns,dummy_maker, dummy_breaker )
+    g.set_code(Turn.new(code))
+    result_1 = g.send(:analyze_turn, turn_1)
+    assert_equal(1, result_1.black_hits)
+    assert_equal(2, result_1.white_hits)
+    result_2 = g.send(:analyze_turn, turn_2)
+    assert_equal(1, result_2.black_hits)
+    assert_equal(2, result_2.white_hits)
+    result_3 = g.send(:analyze_turn, turn_3)
+    assert_equal(3, result_3.black_hits)
+    assert_equal(0, result_3.white_hits)
+  end
+
 end

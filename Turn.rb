@@ -6,7 +6,7 @@ require_relative "RuleViolationError"
 
 class Turn
   
-  attr_reader :code, :black_hits, :white_hits
+  attr_reader :black_hits, :white_hits
   
   def initialize(codes)
     raise TypeError, 'codes needs to be stored as Array' unless codes.is_a? Array

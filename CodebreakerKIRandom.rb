@@ -7,9 +7,17 @@ require_relative "Game"
 require_relative "Turn"
 
 class CodebreakerKIRandom < Player
+
+  attr_writer :talking
+  
   def initialize(name)
     super(name)
+    @talking = true
     @possible_turns = []
+  end
+
+  def talking?()
+    return @talking
   end
 
   #
@@ -29,23 +37,26 @@ class CodebreakerKIRandom < Player
     # Den Zug aus den Moeglichkeiten fuer die naechste Runde entfernen
     @possible_turns.delete(turn.code)
 
-    puts ""
-    case turn.code[0]
-    when 1
-      print "Ahoy, Matey!"
-    when 2
-      print "Gimme the treasure! I'll give you"
-    when 3
-      print "Where is the booty?!"
-    when 4
-      print "Savvy? I said"
-    when 5
-      print "Aaaarrrrgggghhhh!"
-    when 6
-      print "Blimey!"
-    end
+    if self.talking?()
 
-    print " #{turn.code.to_s()}\n"
+      puts ""
+      case turn.code[0]
+      when 1
+        print "Ahoy, Matey!"
+      when 2
+        print "Gimme the treasure! I'll give you"
+      when 3
+        print "Where is the booty?!"
+      when 4
+        print "Savvy? I said"
+      when 5
+        print "Aaaarrrrgggghhhh!"
+      when 6
+        print "Blimey!"
+      end
+
+      print " #{turn.code.to_s()}\n"
+    end
 
     return turn
   end
